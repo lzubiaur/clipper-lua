@@ -9,24 +9,68 @@ using namespace ClipperLib;
 	#define export extern "C" __attribute__ ((visibility ("default")))
 #endif
 
-export Path* clipper_path_new() {
+// Path
+
+export Path* cl_path_new() {
 	return new Path();
 }
 
-export void clipper_path_free(Path *path) {
+export void cl_path_free(Path *path) {
 	delete path;
 }
 
-export IntPoint* clipper_path_get(Path *path, int i) {
+export IntPoint* cl_path_get(Path *path, int i) {
 	return &((*path)[i]);
 }
 
-export void clipper_path_add(Path *path, int x, int y) {
+export void cl_path_add(Path *path, int x, int y) {
 	path->push_back(IntPoint(x,y));
 }
 
-export ClipperOffset* clipper_offset_new() {
-  return new ClipperOffset();
+export int cl_path_size(Path *path) {
+	return path->size();
+}
+
+// Paths
+
+export Paths* cl_paths_new() {
+	return new Paths();
+}
+
+export void cl_paths_free(Path *paths) {
+	delete paths;
+}
+
+export Path* cl_paths_get(Paths *paths, int i) {
+	return &((*paths)[i]);
+}
+
+export void cl_paths_add(Paths *paths, Path *path) {
+	paths->push_back(*path);
+}
+
+export int cl_paths_size(Paths *paths) {
+	return paths->size();
+}
+
+// ClipperOffset
+
+export ClipperOffset* cl_clipper_offset_new(double miterLimit,double roundPrecision) {
+  return new ClipperOffset(miterLimit,roundPrecision);
+}
+
+export Paths* cl_offset_path(ClipperOffset* co,Path *subj,int offset,int joinType,int endType) {
+  Paths *solution = new Paths();
+  co->AddPath(*subj,JoinType(joinType),EndType(endType));
+  co->Execute(*solution,offset);
+  return solution;
+}
+
+export Paths* cl_offset_paths(ClipperOffset* co,Paths *subj,int offset,int joinType,int endType) {
+  Paths *solution = new Paths();
+  co->AddPaths(*subj,JoinType(joinType),EndType(endType));
+  co->Execute(*solution,offset);
+  return solution;
 }
 
 // export Paths* clipper_paths_offset(ClipperOffset*, Paths *subj,int offset) {

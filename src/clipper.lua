@@ -5,42 +5,107 @@ local C = ffi.load 'polyclipping'
 
 ffi.cdef[[
 
-typedef struct _IntPoint { int64_t x, y; } IntPoint;
-typedef struct _clipper_path clipper_path;
-typedef struct _clipper_offset clipper_offset;
+typedef struct __IntPoint { int64_t x, y; } IntPoint;
+typedef struct __cl_path cl_path;
+typedef struct __cl_paths cl_paths;
+typedef struct __cl_clipper_offset cl_clipper_offset;
 
-clipper_path* clipper_path_new();
-void clipper_path_free(clipper_path *path);
-IntPoint* clipper_path_get(clipper_path *path, int i);
-void clipper_path_add(clipper_path *path, int x, int y);
+// Path
+cl_path* cl_path_new();
+void cl_path_free(cl_path *self);
+IntPoint* cl_path_get(cl_path *self, int i);
+void cl_path_add(cl_path *self, int x, int y);
+int cl_path_size(cl_path *self);
 
-clipper_offset* clipper_offset_new();
-clipper_offset* clipper_paths_offset(clipper_path *subjects,int offset);
+// Paths
+cl_paths* cl_paths_new();
+void cl_paths_free(cl_path *self);
+cl_path* cl_paths_get(cl_paths *self, int i);
+void cl_paths_add(cl_paths *self, cl_path *path);
+int cl_paths_size(cl_paths *self);
+
+// ClipperOffset
+cl_clipper_offset* cl_clipper_offset_new(double miterLimit,double roundPrecision);
+cl_paths* cl_offset_path(cl_clipper_offset *self, cl_path *subj, int offset, int jointType, int endType);
+cl_paths* cl_offset_paths(cl_clipper_offset *self, cl_paths *subj, int offset, int jointType, int endType);
 ]]
+
+-- enum InitOptions {ioReverseSolution = 1, ioStrictlySimple = 2, ioPreserveCollinear = 4};
+
+local JoinType = {
+	square = 0,
+	round = 1,
+	miter = 2
+}
+
+local EndType = {
+	closedPolygon = 0,
+	closedLine = 1,
+	openButt = 2,
+	openSquare = 3,
+	openRound = 4
+}
 
 local Path = {}
 
 function Path.new()
-	return ffi.gc(C.clipper_path_new(), C.clipper_path_free)
+	return ffi.gc(C.cl_path_new(), C.cl_path_free)
 end
 
 function Path:add(x,y)
-  return C.clipper_path_add(self,x,y)
+  return C.cl_path_add(self,x,y)
 end
 
 function Path:get(i)
-  return C.clipper_path_get(self,i-1)
+  return C.cl_path_get(self,i-1)
+end
+
+function Path:size()
+	return C.cl_path_size(self)
+end
+
+local Paths = {}
+
+function Paths.new()
+	return ffi.gc(C.cl_paths_new(), C.cl_paths_free)
+end
+
+function Paths:add(path)
+  return C.cl_paths_add(self,path)
+end
+
+function Paths:get(i)
+  return C.cl_paths_get(self,i-1)
+end
+
+function Paths:size()
+	return C.cl_paths_size(self)
 end
 
 local ClipperOffset = {}
 
-function ClipperOffset.new()
-  return C.clipper_offset_new();
+function ClipperOffset.new(miterLimit,roundPrecision)
+  return C.cl_clipper_offset_new(miterLimit or 2,roundPrecision or 0.25);
 end
 
-ffi.metatype('clipper_path', {__index = Path})
+function ClipperOffset:offsetPath(path,offset,jt,et)
+	assert(JoinType[jt])
+	assert(EndType[et])
+	return C.cl_offset_path(self,path,offset,JoinType[jt],EndType[et])
+end
+
+function ClipperOffset:offsetPaths(paths,offset,jt,et)
+	assert(JoinType[jt])
+	assert(EndType[et])
+	return C.cl_offset_paths(self,paths,offset,JoinType[jt],EndType[et])
+end
+
+ffi.metatype('cl_path', {__index = Path})
+ffi.metatype('cl_paths', {__index = Paths})
+ffi.metatype('cl_clipper_offset', {__index = ClipperOffset})
 
 return {
   Path = Path.new,
+  Paths = Paths.new,
   ClipperOffset = ClipperOffset.new,
 }
