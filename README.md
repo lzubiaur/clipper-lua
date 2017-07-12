@@ -1,4 +1,4 @@
-Clipper FFI binding for LuaJit
+Work in progress - Clipper FFI binding for LuaJit
 
 # Build the shared library
 
