@@ -1,5 +1,7 @@
 Work in progress - Clipper FFI binding for LuaJit
 
+Inspired by https://luapower.com/clipper
+
 # Requirements to build and run the tests
 
 * LuaJit
