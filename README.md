@@ -1,11 +1,5 @@
-Work in progress - Clipper FFI binding for LuaJit
-
+[Clipper](http://www.angusj.com/delphi/clipper.php) FFI binding for LuaJit
 Inspired by https://luapower.com/clipper
-
-# Requirements to build and run the tests
-
-* LuaJit
-* CMake
 
 # Build the shared library
 
@@ -29,6 +23,12 @@ cd src
 cd specs
 ./run-tests.sh
 ```
+
+# Requirements
+
+* CMake (build)
+* LuaJit (tests)
+* Love (tests)
 
 # TODO
 
