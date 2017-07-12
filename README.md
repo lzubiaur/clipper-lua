@@ -1,5 +1,10 @@
 Work in progress - Clipper FFI binding for LuaJit
 
+# Requirements to build and run the tests
+
+* LuaJit
+* CMake
+
 # Build the shared library
 
 ```
