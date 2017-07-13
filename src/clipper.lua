@@ -157,14 +157,14 @@ end
 function Clipper:addPath(path,pt,closed)
 	assert(path,'path is nil')
 	assert(PolyType[pt],'unknown polygon type')
-	if closed == nil then closed = false end
+	if closed == nil then closed = true end
 	C.cl_clipper_add_path(self,path,PolyType[pt],closed,err);
 end
 
 function Clipper:addPaths(paths,pt,closed)
 	assert(paths,'paths is nil')
 	assert(PolyType[pt],'unknown polygon type')
-	if closed == nil then closed = false end
+	if closed == nil then closed = true end
 	if not C.cl_clipper_add_paths(self,paths,PolyType[pt],closed,err) then
 		error(ffi.string(C.cl_err_msg()))
 	end
