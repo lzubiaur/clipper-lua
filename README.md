@@ -1,8 +1,14 @@
-[Clipper](http://www.angusj.com/delphi/clipper.php) FFI binding for LuaJit
+[Clipper](http://www.angusj.com/delphi/clipper.php) FFI binding for LuaJIT.
+
+Clipper version: 6.4.2 (last version available as of July 2017).
 
 Inspired by https://luapower.com/clipper
 
-> Only macos binary (Windows/Linux build are planned)
+# Notes
+
+* Only Path(s) clipping/offseting (not PolyTree)
+* Only macos binary (Windows/Linux build are planned)
+* Clipper.ZFillFunction not binded
 
 # Install as a plug-in
 
@@ -57,4 +63,5 @@ cd specs
 
 # TODO
 
-Set CMake's MACOSX_RPATH for macosx build
+* Set CMake's MACOSX_RPATH for macosx build
+* Uncomment use_int32 to improve performance?
