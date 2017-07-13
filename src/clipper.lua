@@ -43,46 +43,32 @@ bool cl_clipper_add_paths(cl_clipper *cl,cl_paths *paths, int pt, bool closed,co
 void cl_clipper_reverse_solution(cl_clipper *cl, bool value);
 void cl_clipper_preserve_collinear(cl_clipper *cl, bool value);
 void cl_clipper_strictly_simple(cl_clipper *cl, bool value);
+cl_paths* cl_clipper_execute(cl_clipper *cl,int clipType,int subjFillType,int clipFillType);
 ]]
 
 local ClipType  = {
-	intersection = 0,
-	union = 1,
-	difference = 2,
-	xor = 3
-}
-
-local PolyFillType = {
-	evenOdd = 0,
-	nonZero = 1,
-	positive = 2,
-	negative = 3
+	intersection = 0, union = 1, difference = 2, xor = 3
 }
 
 local JoinType = {
-	square = 0,
-	round = 1,
-	miter = 2
+	square = 0, round = 1, miter = 2
 }
 
 local EndType = {
-	closedPolygon = 0,
-	closedLine = 1,
-	openButt = 2,
-	openSquare = 3,
-	openRound = 4
+	closedPolygon = 0, closedLine = 1, openButt = 2, openSquare = 3, openRound = 4
 }
 
 -- Clipper constructor options
 local InitOptions = {
-	reverseSolution  = 1,
-	strictlySimple   = 2,
-	preserveCollinear = 4
+	reverseSolution  = 1, strictlySimple   = 2, preserveCollinear = 4
 }
 
 local PolyType = {
-	subject = 0,
-	clip = 1
+	subject = 0, clip = 1
+}
+
+local PolyFillType = {
+	evenOdd = 1, nonZero = 2, positive = 2, negative = 3
 }
 
 local Path = {}
@@ -129,6 +115,7 @@ function ClipperOffset.new(miterLimit,roundPrecision)
 end
 
 function ClipperOffset:offsetPath(path,offset,jt,et)
+	jt,et = jt or 'square', et or 'openButt'
 	assert(JoinType[jt])
 	assert(EndType[et])
 	return C.cl_offset_path(self,path,offset,JoinType[jt],EndType[et])
@@ -163,6 +150,10 @@ function Clipper.new(...)
 	return ffi.gc(cl, C.cl_clipper_free)
 end
 
+function Clipper:clear()
+	C.cl_clipper_clear(self)
+end
+
 function Clipper:addPath(path,pt,closed)
 	assert(path,'path is nil')
 	assert(PolyType[pt],'unknown polygon type')
@@ -177,6 +168,20 @@ function Clipper:addPaths(paths,pt,closed)
 	if not C.cl_clipper_add_paths(self,paths,PolyType[pt],closed,err) then
 		error(ffi.string(C.cl_err_msg()))
 	end
+end
+
+function Clipper:execute(clipType,subjFillType,clipFillType)
+	subjFillType = subjFillType or 'evenOdd'
+	clipFillType = clipFillType or 'evenOdd'
+	clipType = assert(ClipType[clipType],'unknown clip type')
+	subjFillType = assert(PolyFillType[subjFillType],'unknown fill type')
+	clipFillType = assert(PolyFillType[clipFillType],'unknown fill type')
+	local solution = C.cl_clipper_execute(self,clipType,subjFillType,clipFillType)
+	-- XXX test `not nil` return false ?!
+	if solution == nil then
+		error(ffi.string(C.cl_err_msg()))
+	end
+	return solution
 end
 
 ffi.metatype('cl_path', {__index = Path})

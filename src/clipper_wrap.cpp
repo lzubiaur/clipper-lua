@@ -82,6 +82,7 @@ export void cl_offset_free(ClipperOffset *co) {
 export Paths* cl_offset_path(ClipperOffset* co,Path *subj,int offset,int joinType,int endType) {
   Paths *solution = new Paths();
   co->AddPath(*subj,JoinType(joinType),EndType(endType));
+	// XXX check execute return value?
   co->Execute(*solution,offset);
   return solution;
 }
@@ -128,7 +129,7 @@ export bool cl_clipper_add_path(Clipper *cl,Path *path, int pt, bool closed, con
 		cl->AddPath(*path,PolyType(pt),closed);
 		return true;
 	} catch(clipperException &e) {
-		err = e.what();
+		err_msg = e.what();
 		return false;
 	}
 }
@@ -143,8 +144,13 @@ export bool cl_clipper_add_paths(Clipper *cl,Paths *paths, int pt, bool closed, 
 	}
 }
 
-// export Paths* cl_clipper_clip(Clipper *cl,Paths *subj,Paths *clip,int ct,bool subjClosed,bool clipClosed) {
-// 	Paths *solution = new Paths();
-// 	cl->Execute(ClipType(ct),solution,)
-// 	return solution;
-// }
+export Paths* cl_clipper_execute(Clipper *cl,int clipType,int subjFillType,int clipFillType) {
+	Paths *solution = new Paths();
+	try {
+		cl->Execute(ClipType(clipType),*solution,PolyFillType(subjFillType),PolyFillType(clipFillType));
+	} catch(clipperException &e) {
+		err_msg = e.what();
+		return NULL;
+	}
+	return solution;
+}
