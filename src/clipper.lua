@@ -28,6 +28,7 @@ int cl_paths_size(cl_paths *self);
 cl_clipper_offset* cl_clipper_offset_new(double miterLimit,double roundPrecision);
 cl_paths* cl_offset_path(cl_clipper_offset *self, cl_path *subj, int offset, int jointType, int endType);
 cl_paths* cl_offset_paths(cl_clipper_offset *self, cl_paths *subj, int offset, int jointType, int endType);
+void cl_offset_clear(cl_clipper_offset *self);
 ]]
 
 -- enum InitOptions {ioReverseSolution = 1, ioStrictlySimple = 2, ioPreserveCollinear = 4};
@@ -98,6 +99,10 @@ function ClipperOffset:offsetPaths(paths,offset,jt,et)
 	assert(JoinType[jt])
 	assert(EndType[et])
 	return C.cl_offset_paths(self,paths,offset,JoinType[jt],EndType[et])
+end
+
+function ClipperOffset:clear()
+	C.cl_offset_clear(self)
 end
 
 ffi.metatype('cl_path', {__index = Path})

@@ -1,6 +1,6 @@
 local clipper = require 'clipper'
 local lust = require 'lust'
-local describe, it, expect = lust.describe, lust.it, lust.expect
+local describe, it, expect, before = lust.describe, lust.it, lust.expect, lust.before
 
 local scale = 1000000
 
@@ -55,20 +55,30 @@ describe('test clipper ffi binding', function()
     end)
   end)
 
-  describe('path offset',function()
-    it('can create an ClipperOffset object',function()
-      local co = clipper.ClipperOffset()
-      expect(co).to.exist()
+  describe('paths offset',function()
+    local co
+    before(function()
+      co = clipper.ClipperOffset()
     end)
     it('can offset a single path',function()
-      local path = clipper.Path()
-      path:add(10,20)
-      path:add(50,20)
-      path:add(50,50)
-      local co = clipper.ClipperOffset()
-      local out = co:offsetPath(path,10,'miter','openButt')
+      local p1 = clipper.Path()
+      p1:add(10,20)
+      p1:add(50,20)
+      p1:add(50,50)
+      local out = co:offsetPath(p1,10,'miter','openButt')
       expect(out:size()).to.be(1)
       expect(out:get(1):size()).to.be(6)
+    end)
+    it('can clear all paths', function()
+      co:clear()
+      local p2 = clipper.Path()
+      p2:add(100,100)
+      p2:add(20,150)
+      out = co:offsetPath(p2,10,'miter','openButt')
+      expect(out:get(1):size()).to.be(4)
+    end)
+    it('can offset multiple paths',function()
+      -- TODO
     end)
   end)
 end)

@@ -73,6 +73,10 @@ export Paths* cl_offset_paths(ClipperOffset* co,Paths *subj,int offset,int joinT
   return solution;
 }
 
+export void cl_offset_clear(ClipperOffset *co) {
+	co->Clear();
+}
+
 // export Paths* clipper_paths_offset(ClipperOffset*, Paths *subj,int offset) {
 //   Paths *solution = new Paths();
 //   co.AddPaths(*subj, jtRound, etOpenSquare);
