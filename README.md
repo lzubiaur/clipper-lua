@@ -1,6 +1,4 @@
-[Clipper](http://www.angusj.com/delphi/clipper.php) FFI binding for LuaJIT.
-
-Clipper version: 6.4.2 (last version available as of July 2017).
+[Clipper](http://www.angusj.com/delphi/clipper.php) (v6.4.2) FFI binding for LuaJIT.
 
 Inspired by https://luapower.com/clipper
 
@@ -47,15 +45,11 @@ path:add(50,50)
 
 local co = clipper.ClipperOffset()
 local out = co:offsetPath(path,10,'miter','openButt')
-
-for i=1,out:size() do
-  ...
-end
 ```
 
 # References
 
-*
+TODO
 
 # Build the shared library
 
