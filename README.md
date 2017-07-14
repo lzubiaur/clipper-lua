@@ -14,6 +14,27 @@ Inspired by https://luapower.com/clipper
 
 Copy one of the pre-build binaries and the Lua module `src/clipper.lua` to your project. On Linux/MacOS you'll probably have to set `LD_LIBRARY_PATH` or `DYLD_LIBRARY_PATH` to the path where you installed the binary.
 
+# Polygon clipping example
+
+```Lua
+local p1 = clipper.Path()
+p1:add(100,100)
+p1:add(150,100)
+p1:add(150,150)
+p1:add(100,150)
+
+local p2 = clipper.Path()
+p2:add(100,120)
+p2:add(150,120)
+p2:add(150,130)
+p2:add(100,130)
+
+local cl = clipper.Clipper()
+cl:addPath(p1,'subject')
+cl:addPath(p2,'clip')
+local out = cl:execute('difference')
+```
+
 # Path offset example
 
 ```Lua
@@ -31,6 +52,10 @@ for i=1,out:size() do
   ...
 end
 ```
+
+# References
+
+*
 
 # Build the shared library
 
