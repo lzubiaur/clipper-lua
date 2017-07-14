@@ -5,7 +5,9 @@ local C = ffi.load 'polyclipping'
 
 ffi.cdef[[
 
-typedef struct __IntPoint { int64_t x, y; } IntPoint;
+// Replace int64_t with int32_t if Clipper has been compiled with use_int32
+typedef struct __cl_int_point { int64_t x, y; } cl_int_point;
+typedef struct __cl_int_rect { int64_t left; int64_t top; int64_t right; int64_t bottom; } cl_int_rect;
 typedef struct __cl_path cl_path;
 typedef struct __cl_paths cl_paths;
 typedef struct __cl_offset cl_offset;
@@ -16,7 +18,7 @@ const char* cl_err_msg();
 // Path
 cl_path* cl_path_new();
 void cl_path_free(cl_path *self);
-IntPoint* cl_path_get(cl_path *self, int i);
+cl_int_point* cl_path_get(cl_path *self, int i);
 bool cl_path_add(cl_path *self, int x, int y);
 int cl_path_size(cl_path *self);
 
@@ -44,6 +46,7 @@ void cl_clipper_reverse_solution(cl_clipper *cl, bool value);
 void cl_clipper_preserve_collinear(cl_clipper *cl, bool value);
 void cl_clipper_strictly_simple(cl_clipper *cl, bool value);
 cl_paths* cl_clipper_execute(cl_clipper *cl,int clipType,int subjFillType,int clipFillType);
+cl_int_rect cl_clipper_get_bounds(cl_clipper *cl);
 ]]
 
 local ClipType  = {
@@ -182,6 +185,11 @@ function Clipper:execute(clipType,subjFillType,clipFillType)
 		error(ffi.string(C.cl_err_msg()))
 	end
 	return solution
+end
+
+function Clipper:getBounds()
+	local r = C.cl_clipper_get_bounds(self)
+	return tonumber(r.left),tonumber(r.top),tonumber(r.right),tonumber(r.bottom)
 end
 
 ffi.metatype('cl_path', {__index = Path})

@@ -40,6 +40,24 @@ function love.load()
   for i=1,out:size() do
     table.insert(points,getPathPoints(out:get(i)))
   end
+
+  local p1 = Clipper.Path()
+  p1:add(200,10)
+  p1:add(250,10)
+  p1:add(250,50)
+  p1:add(200,50)
+  local p2 = Clipper.Path()
+  p2:add(200,20)
+  p2:add(250,20)
+  p2:add(250,30)
+  p2:add(200,30)
+  local cl = Clipper.Clipper()
+  cl:addPath(p1,'subject',true)
+  cl:addPath(p2,'clip')
+  local out = cl:execute('difference')
+  for i=1,out:size() do
+    table.insert(points,getPathPoints(out:get(i)))
+  end
 end
 
 function love.update(dt)

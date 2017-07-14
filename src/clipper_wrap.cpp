@@ -154,3 +154,7 @@ export Paths* cl_clipper_execute(Clipper *cl,int clipType,int subjFillType,int c
 	}
 	return solution;
 }
+
+export IntRect cl_clipper_get_bounds(Clipper *cl) {
+	return cl->GetBounds();
+}
