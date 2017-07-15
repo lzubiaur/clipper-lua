@@ -2,20 +2,6 @@
 
 Inspired by https://luapower.com/clipper
 
-# Notes
-
-* Only Path(s) clipping/offseting (not PolyTree)
-* Only macos binary (Windows/Linux build are planned)
-
-Not implemented/binded
-* ReversePaths (but ReversePath is)
-* SimplifyPolygons (but SimplifyPolygon is)
-* CleanPolygons (but CleanPolygon is)
-* Clipper.ZFillFunction
-* MinkowskiDiff/Sum
-* PolyTree related functions (OpenPathsFromPolyTree, ClosedPathsFromPolyTree, PolyTreeToPaths)
-* OffsetPaths (deprecated)
-
 # Install as a plug-in
 
 Copy one of the pre-build binaries and the Lua module `src/clipper.lua` to your project. On Linux/MacOS you'll probably have to set `LD_LIBRARY_PATH` or `DYLD_LIBRARY_PATH` to the path where you installed the binary.
@@ -87,6 +73,20 @@ cd specs
 * CMake (build)
 * LuaJit (tests)
 * Love (tests)
+
+# Notes
+
+* Only Path(s) clipping/offseting (not PolyTree)
+* Only macos binary (Windows/Linux build are planned)
+
+Not implemented/binded
+* ReversePaths (but ReversePath is)
+* SimplifyPolygons (but SimplifyPolygon is)
+* CleanPolygons (but CleanPolygon is)
+* Clipper.ZFillFunction
+* MinkowskiDiff/Sum
+* PolyTree related functions (OpenPathsFromPolyTree, ClosedPathsFromPolyTree, PolyTreeToPaths)
+* OffsetPaths (deprecated)
 
 # TODO
 
