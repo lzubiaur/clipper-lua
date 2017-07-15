@@ -63,6 +63,13 @@ export Paths* cl_path_simplify(const Path *in,int fillType) {
 	SimplifyPolygon(*in,*out,PolyFillType(fillType));
 	return out;
 }
+
+export Path* cl_path_clean_polygon(const Path *in, double distance = 1.415) {
+	Path *out = new Path();
+	CleanPolygon(*in,*out,distance);
+	return out;
+}
+
 // Paths
 
 export Paths* cl_paths_new() {

@@ -26,6 +26,7 @@ bool cl_path_orientation(const cl_path *self);
 void cl_path_reverse(cl_path *self);
 int cl_path_point_in_polygon(cl_path *self,int x, int y);
 cl_paths* cl_path_simplify(cl_path *self,int fillType);
+cl_path* cl_path_clean_polygon(const cl_path *in, double distance);
 
 // Paths
 cl_paths* cl_paths_new();
@@ -117,6 +118,11 @@ function Path:simplify(fillType)
 	fillType = fillType or 'evenOdd'
 	fillType = assert(PolyFillType[fillType],'unknown fill type')
 	return C.cl_path_simplify(self,fillType)
+end
+
+function Path:cleanPolygon(distance)
+	distance = distance or 1.415
+	return C.cl_path_clean_polygon(self,distance)
 end
 
 local Paths = {}
