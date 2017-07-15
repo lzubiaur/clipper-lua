@@ -33,8 +33,8 @@ int cl_paths_size(cl_paths *self);
 // ClipperOffset
 cl_offset* cl_offset_new(double miterLimit,double roundPrecision);
 void cl_offset_free(cl_offset *self);
-cl_paths* cl_offset_path(cl_offset *self, cl_path *subj, double offset, int jointType, int endType);
-cl_paths* cl_offset_paths(cl_offset *self, cl_paths *subj, double offset, int jointType, int endType);
+cl_paths* cl_offset_path(cl_offset *self, cl_path *subj, double delta, int jointType, int endType);
+cl_paths* cl_offset_paths(cl_offset *self, cl_paths *subj, double delta, int jointType, int endType);
 void cl_offset_clear(cl_offset *self);
 
 // Clipper
@@ -122,17 +122,17 @@ function ClipperOffset.new(miterLimit,roundPrecision)
 	return ffi.gc(co, C.cl_offset_free)
 end
 
-function ClipperOffset:offsetPath(path,offset,jt,et)
+function ClipperOffset:offsetPath(path,delta,jt,et)
 	jt,et = jt or 'square', et or 'openButt'
 	assert(JoinType[jt])
 	assert(EndType[et])
-	return C.cl_offset_path(self,path,offset,JoinType[jt],EndType[et])
+	return C.cl_offset_path(self,path,delta,JoinType[jt],EndType[et])
 end
 
-function ClipperOffset:offsetPaths(paths,offset,jt,et)
+function ClipperOffset:offsetPaths(paths,delta,jt,et)
 	assert(JoinType[jt])
 	assert(EndType[et])
-	return C.cl_offset_paths(self,paths,offset,JoinType[jt],EndType[et])
+	return C.cl_offset_paths(self,paths,delta,JoinType[jt],EndType[et])
 end
 
 function ClipperOffset:clear()
