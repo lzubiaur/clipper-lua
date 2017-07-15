@@ -25,6 +25,7 @@ double cl_path_area(const cl_path *self);
 bool cl_path_orientation(const cl_path *self);
 void cl_path_reverse(cl_path *self);
 int cl_path_point_in_polygon(cl_path *self,int x, int y);
+cl_paths* cl_path_simplify(cl_path *self,int fillType);
 
 // Paths
 cl_paths* cl_paths_new();
@@ -110,6 +111,12 @@ end
 
 function Path:contains(x,y)
 	return C.cl_path_point_in_polygon(self,x,y)
+end
+
+function Path:simplify(fillType)
+	fillType = fillType or 'evenOdd'
+	fillType = assert(PolyFillType[fillType],'unknown fill type')
+	return C.cl_path_simplify(self,fillType)
 end
 
 local Paths = {}

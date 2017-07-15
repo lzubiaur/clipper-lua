@@ -58,6 +58,11 @@ export int cl_path_point_in_polygon(const Path *path, cInt x, cInt y) {
 	return PointInPolygon(IntPoint(x,y),*path);
 }
 
+export Paths* cl_path_simplify(const Path *in,int fillType) {
+	Paths *out = new Paths();
+	SimplifyPolygon(*in,*out,PolyFillType(fillType));
+	return out;
+}
 // Paths
 
 export Paths* cl_paths_new() {

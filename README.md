@@ -6,7 +6,12 @@ Inspired by https://luapower.com/clipper
 
 * Only Path(s) clipping/offseting (not PolyTree)
 * Only macos binary (Windows/Linux build are planned)
-* Clipper.ZFillFunction not binded
+
+Not implemented/binded
+* Clipper.ZFillFunction
+* ReversePaths (but ReversePath is)
+* MinkowskiDiff/Sum
+* PolyTree related functions (OpenPathsFromPolyTree, ClosedPathsFromPolyTree, PolyTreeToPaths)
 
 # Install as a plug-in
 
@@ -82,5 +87,6 @@ cd specs
 
 # TODO
 
+* CleanPolygon(s)
 * Set CMake's MACOSX_RPATH for macosx build
 * Uncomment use_int32 to improve performance?
