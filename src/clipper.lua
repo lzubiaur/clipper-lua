@@ -22,6 +22,9 @@ cl_int_point* cl_path_get(cl_path *self, int i);
 bool cl_path_add(cl_path *self, int x, int y);
 int cl_path_size(cl_path *self);
 double cl_path_area(const cl_path *self);
+bool cl_path_orientation(const cl_path *self);
+void cl_path_reverse(cl_path *self);
+int cl_path_point_in_polygon(cl_path *self,int x, int y);
 
 // Paths
 cl_paths* cl_paths_new();
@@ -95,6 +98,18 @@ end
 
 function Path:area()
 	return C.cl_path_area(self)
+end
+
+function Path:reverse()
+	return C.cl_path_reverse(self)
+end
+
+function Path:orientation()
+	return C.cl_path_orientation(self)
+end
+
+function Path:contains(x,y)
+	return C.cl_path_point_in_polygon(self,x,y)
 end
 
 local Paths = {}

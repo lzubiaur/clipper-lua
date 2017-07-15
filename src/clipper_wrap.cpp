@@ -42,6 +42,22 @@ export int cl_path_size(Path *path) {
 	return path->size();
 }
 
+export double cl_path_area(const Path *path) {
+	return Area(*path);
+}
+
+export bool cl_path_orientation(const Path *path) {
+	return Orientation(*path);
+}
+
+export void cl_path_reverse(Path *path) {
+	ReversePath(*path);
+}
+
+export int cl_path_point_in_polygon(const Path *path, cInt x, cInt y) {
+	return PointInPolygon(IntPoint(x,y),*path);
+}
+
 // Paths
 
 export Paths* cl_paths_new() {
@@ -159,8 +175,4 @@ export Paths* cl_clipper_execute(Clipper *cl,int clipType,int subjFillType,int c
 
 export IntRect cl_clipper_get_bounds(Clipper *cl) {
 	return cl->GetBounds();
-}
-
-export double cl_path_area(const Path *path) {
-	return Area(*path);
 }
