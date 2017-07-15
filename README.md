@@ -10,9 +10,11 @@ Inspired by https://luapower.com/clipper
 Not implemented/binded
 * ReversePaths (but ReversePath is)
 * SimplifyPolygons (but SimplifyPolygon is)
+* CleanPolygons (but CleanPolygon is)
 * Clipper.ZFillFunction
 * MinkowskiDiff/Sum
 * PolyTree related functions (OpenPathsFromPolyTree, ClosedPathsFromPolyTree, PolyTreeToPaths)
+* OffsetPaths (deprecated)
 
 # Install as a plug-in
 
