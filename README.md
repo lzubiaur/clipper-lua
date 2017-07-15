@@ -8,8 +8,9 @@ Inspired by https://luapower.com/clipper
 * Only macos binary (Windows/Linux build are planned)
 
 Not implemented/binded
-* Clipper.ZFillFunction
 * ReversePaths (but ReversePath is)
+* SimplifyPolygons (but SimplifyPolygon is)
+* Clipper.ZFillFunction
 * MinkowskiDiff/Sum
 * PolyTree related functions (OpenPathsFromPolyTree, ClosedPathsFromPolyTree, PolyTreeToPaths)
 
