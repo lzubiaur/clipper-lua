@@ -33,8 +33,8 @@ int cl_paths_size(cl_paths *self);
 // ClipperOffset
 cl_offset* cl_offset_new(double miterLimit,double roundPrecision);
 void cl_offset_free(cl_offset *self);
-cl_paths* cl_offset_path(cl_offset *self, cl_path *subj, int offset, int jointType, int endType);
-cl_paths* cl_offset_paths(cl_offset *self, cl_paths *subj, int offset, int jointType, int endType);
+cl_paths* cl_offset_path(cl_offset *self, cl_path *subj, double offset, int jointType, int endType);
+cl_paths* cl_offset_paths(cl_offset *self, cl_paths *subj, double offset, int jointType, int endType);
 void cl_offset_clear(cl_offset *self);
 
 // Clipper
