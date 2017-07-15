@@ -126,8 +126,6 @@ export void cl_offset_clear(ClipperOffset *co) {
 	co->Clear();
 }
 
-// export void cl_offset_paths(const Paths &in_polys, Paths &out_polys, double delta, JoinType jointype = jtSquare, EndType endtype = etClosed, double limit = 0.0);
-
 // Clipper
 
 export Clipper* cl_clipper_new(Clipper *cl) {
@@ -179,6 +177,7 @@ export Paths* cl_clipper_execute(Clipper *cl,int clipType,int subjFillType,int c
 	try {
 		cl->Execute(ClipType(clipType),*solution,PolyFillType(subjFillType),PolyFillType(clipFillType));
 	} catch(clipperException &e) {
+		delete solution;
 		err_msg = e.what();
 		return NULL;
 	}
