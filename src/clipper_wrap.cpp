@@ -98,6 +98,8 @@ export void cl_offset_clear(ClipperOffset *co) {
 	co->Clear();
 }
 
+// export void cl_offset_paths(const Paths &in_polys, Paths &out_polys, double delta, JoinType jointype = jtSquare, EndType endtype = etClosed, double limit = 0.0);
+
 // Clipper
 
 export Clipper* cl_clipper_new(Clipper *cl) {
@@ -157,4 +159,8 @@ export Paths* cl_clipper_execute(Clipper *cl,int clipType,int subjFillType,int c
 
 export IntRect cl_clipper_get_bounds(Clipper *cl) {
 	return cl->GetBounds();
+}
+
+export double cl_path_area(const Path *path) {
+	return Area(*path);
 }

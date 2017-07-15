@@ -21,6 +21,7 @@ void cl_path_free(cl_path *self);
 cl_int_point* cl_path_get(cl_path *self, int i);
 bool cl_path_add(cl_path *self, int x, int y);
 int cl_path_size(cl_path *self);
+double cl_path_area(const cl_path *self);
 
 // Paths
 cl_paths* cl_paths_new();
@@ -90,6 +91,10 @@ end
 
 function Path:size()
 	return C.cl_path_size(self)
+end
+
+function Path:area()
+	return C.cl_path_area(self)
 end
 
 local Paths = {}
