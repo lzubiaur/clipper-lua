@@ -129,16 +129,27 @@ export void cl_offset_free(ClipperOffset *co) {
 
 export Paths* cl_offset_path(ClipperOffset* co,Path *subj,double delta,int joinType,int endType) {
   Paths *solution = new Paths();
-  co->AddPath(*subj,JoinType(joinType),EndType(endType));
-	// XXX check execute return value?
-  co->Execute(*solution,delta);
+	try {
+		co->AddPath(*subj,JoinType(joinType),EndType(endType));
+		co->Execute(*solution,delta);
+	} catch(clipperException &e) {
+		err_msg = e.what();
+		delete solution;
+		return NULL;
+	}
   return solution;
 }
 
 export Paths* cl_offset_paths(ClipperOffset* co,Paths *subj,double delta,int joinType,int endType) {
   Paths *solution = new Paths();
-  co->AddPaths(*subj,JoinType(joinType),EndType(endType));
-  co->Execute(*solution,delta);
+	try {
+  	co->AddPaths(*subj,JoinType(joinType),EndType(endType));
+  	co->Execute(*solution,delta);
+	} catch(clipperException &e) {
+		err_msg = e.what();
+		delete solution;
+		return NULL;
+	}
   return solution;
 }
 
