@@ -19,15 +19,22 @@
 -- SOFTWARE.
 
 local ffi = require 'ffi'
--- ffi.load doesn't use package.cpath to search for libraries but rather the
+-- NOTE ffi.load doesn't use package.cpath to search for libraries but rather the
 -- default OS default search path (e.g. LD_LIBRARY_PATH).
+
+-- Load Clipper from a shared library...
 local C = ffi.load 'polyclipping'
+-- or use the default namespace if Clipper's been compiled within the executable
+-- local C = ffi.C
 
 ffi.cdef[[
 
-// Replace int64_t with int32_t if Clipper has been compiled with use_int32
+// Replace `int64_t` with `int32_t` if Clipper has been compiled with `use_int32`
 typedef struct __cl_int_point { int64_t x, y; } cl_int_point;
 typedef struct __cl_int_rect { int64_t left; int64_t top; int64_t right; int64_t bottom; } cl_int_rect;
+// Replace `long long` with `int` if compiled with `use_int32`
+typedef signed long long cInt;
+
 typedef struct __cl_path cl_path;
 typedef struct __cl_paths cl_paths;
 typedef struct __cl_offset cl_offset;
@@ -39,12 +46,12 @@ const char* cl_err_msg();
 cl_path* cl_path_new();
 void cl_path_free(cl_path *self);
 cl_int_point* cl_path_get(cl_path *self, int i);
-bool cl_path_add(cl_path *self, int x, int y);
+bool cl_path_add(cl_path *self, cInt x, cInt y);
 int cl_path_size(cl_path *self);
 double cl_path_area(const cl_path *self);
 bool cl_path_orientation(const cl_path *self);
 void cl_path_reverse(cl_path *self);
-int cl_path_point_in_polygon(cl_path *self,int x, int y);
+int cl_path_point_in_polygon(cl_path *self,cInt x, cInt y);
 cl_paths* cl_path_simplify(cl_path *self,int fillType);
 cl_path* cl_path_clean_polygon(const cl_path *in, double distance);
 
@@ -174,13 +181,22 @@ function ClipperOffset:offsetPath(path,delta,jt,et)
 	jt,et = jt or 'square', et or 'openButt'
 	assert(JoinType[jt])
 	assert(EndType[et])
-	return C.cl_offset_path(self,path,delta,JoinType[jt],EndType[et])
+	local out = C.cl_offset_path(self,path,delta,JoinType[jt],EndType[et])
+	if out == nil then
+		error(ffi.string(C.cl_err_msg()))
+	end
+	return out
 end
 
 function ClipperOffset:offsetPaths(paths,delta,jt,et)
+	jt,et = jt or 'square', et or 'openButt'
 	assert(JoinType[jt])
 	assert(EndType[et])
-	return C.cl_offset_paths(self,paths,delta,JoinType[jt],EndType[et])
+	local out = C.cl_offset_paths(self,paths,delta,JoinType[jt],EndType[et])
+	if out == nil then
+		error(ffi.string(C.cl_err_msg()))
+	end
+	return out
 end
 
 function ClipperOffset:clear()
@@ -232,12 +248,12 @@ function Clipper:execute(clipType,subjFillType,clipFillType)
 	clipType = assert(ClipType[clipType],'unknown clip type')
 	subjFillType = assert(PolyFillType[subjFillType],'unknown fill type')
 	clipFillType = assert(PolyFillType[clipFillType],'unknown fill type')
-	local solution = C.cl_clipper_execute(self,clipType,subjFillType,clipFillType)
+	local out = C.cl_clipper_execute(self,clipType,subjFillType,clipFillType)
 	-- XXX test `not nil` return false ?!
-	if solution == nil then
+	if out == nil then
 		error(ffi.string(C.cl_err_msg()))
 	end
-	return solution
+	return out
 end
 
 function Clipper:getBounds()
