@@ -2,9 +2,13 @@
 
 Inspired by https://luapower.com/clipper
 
-# Install as a plug-in
+# Install as a shared library (plug-in)
 
 Copy one of the pre-build binaries and the Lua module `src/clipper.lua` to your project. On Linux/MacOS you'll probably have to set `LD_LIBRARY_PATH` or `DYLD_LIBRARY_PATH` to the path where you installed the binary.
+
+# Build a as static library
+
+On Android build the source as a static library and then include the module to the main executable using `LOCAL_WHOLE_STATIC_LIBRARIES` so all symbols are exported.
 
 # Polygon clipping example
 
