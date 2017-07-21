@@ -6,6 +6,8 @@
 # Polygon clipping example
 
 ```Lua
+local clipper = require 'clipper'
+
 local p1 = clipper.Path()
 p1:add(100,100)
 p1:add(150,100)
@@ -27,7 +29,7 @@ local out = cl:execute('difference')
 # Path offset example
 
 ```Lua
-clipper = require 'clipper'
+local clipper = require 'clipper'
 
 local path = clipper.Path()
 path:add(10,20)
