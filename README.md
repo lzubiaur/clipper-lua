@@ -3,7 +3,7 @@
 > Inspired by https://luapower.com/clipper
 
 
-# Polygon clipping example
+## Polygon clipping example
 
 ```Lua
 local clipper = require 'clipper'
@@ -26,7 +26,7 @@ cl:addPath(p2,'clip')
 local out = cl:execute('difference')
 ```
 
-# Path offset example
+## Path offset example
 
 ```Lua
 local clipper = require 'clipper'
@@ -40,19 +40,19 @@ local co = clipper.ClipperOffset()
 local out = co:offsetPath(path,10,'miter','openButt')
 ```
 
-# References
+## References
 
 TODO
 
-# Install as a shared library (plug-in)
+## Install as a shared library (plug-in)
 
 Copy one of the pre-build binaries and the Lua module `src/clipper.lua` to your project. On Linux/MacOS you'll probably have to set `LD_LIBRARY_PATH` or `DYLD_LIBRARY_PATH` to the path where you installed the binary.
 
-# Build as a static library
+## Build as a static library
 
 On *Android* build the source as a static library and then include the module to the main executable using `LOCAL_WHOLE_STATIC_LIBRARIES` so all symbols are exported.
 
-# Build the shared libraries
+## Build the shared libraries
 
 Clone this repo and run the build scripts for your target platform.
 
@@ -62,13 +62,13 @@ cd clipper-binding
 bin/build-osx.sh
 ```
 
-# Run the tests
+## Run the tests
 
 ```
 ./tests/run-tests.sh
 ```
 
-# Run the specs
+## Run the specs
 
 Run the specs script from the project root.
 
@@ -76,7 +76,7 @@ Run the specs script from the project root.
 ./specs/run.sh
 ```
 
-# Requirements
+## Requirements
 
 * CMake (build)
 * Xcode (osx build)
@@ -84,7 +84,7 @@ Run the specs script from the project root.
 * LuaJit (tests)
 * Love2D (tests)
 
-# Notes
+## Notes
 
 * Only Path(s) clipping/offseting (no PolyTree)
 
@@ -97,7 +97,7 @@ Not implemented/binded
 * PolyTree related functions (OpenPathsFromPolyTree, ClosedPathsFromPolyTree, PolyTreeToPaths)
 * OffsetPaths (deprecated)
 
-# TODO
+## TODO
 
 * love2d tests on Windows
 * Window 64 binary
