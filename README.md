@@ -86,8 +86,7 @@ Run the specs script from the project root.
 
 # Notes
 
-* Only Path(s) clipping/offseting (not PolyTree)
-* Only macos binary (Windows/Linux build are planned)
+* Only Path(s) clipping/offseting (no PolyTree)
 
 Not implemented/binded
 * ReversePaths (but ReversePath is)
@@ -100,6 +99,7 @@ Not implemented/binded
 
 # TODO
 
+* Window 64 binary
 * CleanPolygon(s)
 * Set CMake's MACOSX_RPATH for macosx build
 * Uncomment use_int32 to improve performance?
