@@ -99,6 +99,7 @@ Not implemented/binded
 
 # TODO
 
+* love2d tests on Windows
 * Window 64 binary
 * CleanPolygon(s)
 * Set CMake's MACOSX_RPATH for macosx build
