@@ -1,6 +1,6 @@
 [Clipper](http://www.angusj.com/delphi/clipper.php) (v6.4.2) FFI binding for LuaJIT.
 
-Inspired by https://luapower.com/clipper
+> Inspired by https://luapower.com/clipper
 
 
 # Polygon clipping example
