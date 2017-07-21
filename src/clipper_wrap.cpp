@@ -23,7 +23,7 @@
 
 using namespace ClipperLib;
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 	#define export extern "C" __declspec (dllexport)
 #else
 	#define export extern "C" __attribute__ ((visibility ("default")))
