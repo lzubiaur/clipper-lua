@@ -2,13 +2,6 @@
 
 Inspired by https://luapower.com/clipper
 
-# Install as a shared library (plug-in)
-
-Copy one of the pre-build binaries and the Lua module `src/clipper.lua` to your project. On Linux/MacOS you'll probably have to set `LD_LIBRARY_PATH` or `DYLD_LIBRARY_PATH` to the path where you installed the binary.
-
-# Build a as static library
-
-On Android build the source as a static library and then include the module to the main executable using `LOCAL_WHOLE_STATIC_LIBRARIES` so all symbols are exported.
 
 # Polygon clipping example
 
@@ -49,34 +42,45 @@ local out = co:offsetPath(path,10,'miter','openButt')
 
 TODO
 
-# Build the shared library
+# Install as a shared library (plug-in)
+
+Copy one of the pre-build binaries and the Lua module `src/clipper.lua` to your project. On Linux/MacOS you'll probably have to set `LD_LIBRARY_PATH` or `DYLD_LIBRARY_PATH` to the path where you installed the binary.
+
+# Build as a static library
+
+On *Android* build the source as a static library and then include the module to the main executable using `LOCAL_WHOLE_STATIC_LIBRARIES` so all symbols are exported.
+
+# Build the shared libraries
+
+Clone this repo and run the build scripts for your target platform.
 
 ```
-mkdir src/build
-cd src/build
-cmake ../src
-make
+git clone https://github.com/lzubiaur/clipper-binding
+cd clipper-binding
+bin/build-osx.sh
 ```
 
 # Run the tests
 
 ```
-cd src
-./run.sh
+./tests/run-tests.sh
 ```
 
 # Run the specs
 
+Run the specs script from the project root.
+
 ```
-cd specs
-./run-tests.sh
+./specs/run.sh
 ```
 
 # Requirements
 
 * CMake (build)
+* Xcode (osx build)
+* VisualStudio (win build)
 * LuaJit (tests)
-* Love (tests)
+* Love2D (tests)
 
 # Notes
 
