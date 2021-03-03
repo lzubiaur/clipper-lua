@@ -215,6 +215,79 @@ export Paths* cl_clipper_execute(Clipper *cl,int clipType,int subjFillType,int c
 	return solution;
 }
 
+export PolyTree* cl_clipper_tree_execute(Clipper *cl,int clipType,int subjFillType,int clipFillType) {
+	PolyTree *solution = new PolyTree();
+	try {
+		cl->Execute(ClipType(clipType),*solution,PolyFillType(subjFillType),PolyFillType(clipFillType));
+	} catch(clipperException &e) {
+		delete solution;
+		err_msg = e.what();
+		return NULL;
+	}
+	return solution;
+}
 export IntRect cl_clipper_get_bounds(Clipper *cl) {
 	return cl->GetBounds();
+}
+
+
+//class PolyTree: public PolyNode
+
+export void cl_polytree_free(PolyTree *p) {
+	delete p;
+}
+
+export PolyNode *cl_polytree_get_first(PolyTree *p) {
+	return p->GetFirst();
+}
+export void cl_polytree_clear(PolyTree *p) {
+	p->Clear();
+}
+
+export int cl_polytree_total(PolyTree *p) {
+	return p->Total();
+}
+
+export Paths* cl_polytree_to_paths(const PolyTree* polytree) {
+	Paths *p = new Paths();
+	PolyTreeToPaths(*polytree, *p);
+	return p;
+}
+export Paths* cl_closed_paths_from_polytree(const PolyTree* polytree) {
+	Paths* p = new Paths();
+	ClosedPathsFromPolyTree(*polytree, *p);
+	return p;
+}
+export Paths* cl_open_paths_from_polytree(PolyTree* polytree) {
+	Paths* p = new Paths();
+	OpenPathsFromPolyTree(*polytree, *p);
+	return p;
+}
+
+//export PolyNode* cl_new_polynode() {
+//	return new PolyNode();
+//}
+
+//export void cl_polynode_free(PolyNode* p) {
+//	delete p;
+//}
+
+export Path* cl_polynode_get_path(PolyNode* p) {
+	return &(p->Contour);
+}
+export PolyNode* cl_polynode_get_child(PolyNode* p, int index) {
+	return (p->Childs)[index];
+}
+export int cl_polynode_get_child_count(PolyNode* p) {
+	return p->ChildCount();
+}
+export bool cl_polynode_is_hole(PolyNode* p) {
+	return p->IsHole();
+}
+export bool cl_polynode_is_open(PolyNode* p) {
+	return p->IsOpen();
+}
+//get sibling? 
+export PolyNode* cl_polynode_get_next(PolyNode* p) {
+	return p->GetNext();
 }
