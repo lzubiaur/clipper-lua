@@ -23,7 +23,7 @@ local ffi = require 'ffi'
 -- default OS default search path (e.g. LD_LIBRARY_PATH).
 
 -- Load Clipper from a shared library...
-local C = ffi.load 'polyclipping'
+local C = ffi.load './libpolyclipping.so'
 -- or use the default namespace if Clipper's been compiled within the executable
 -- local C = ffi.C
 
@@ -39,6 +39,8 @@ typedef struct __cl_path cl_path;
 typedef struct __cl_paths cl_paths;
 typedef struct __cl_offset cl_offset;
 typedef struct __cl_clipper cl_clipper;
+typedef struct __cl_polytree cl_polytree;
+typedef struct __cl_polynode cl_polynode;
 
 const char* cl_err_msg();
 
@@ -79,7 +81,26 @@ void cl_clipper_reverse_solution(cl_clipper *cl, bool value);
 void cl_clipper_preserve_collinear(cl_clipper *cl, bool value);
 void cl_clipper_strictly_simple(cl_clipper *cl, bool value);
 cl_paths* cl_clipper_execute(cl_clipper *cl,int clipType,int subjFillType,int clipFillType);
+cl_polytree* cl_clipper_tree_execute(cl_clipper *cl,int clipType,int subjFillType,int clipFillType);
 cl_int_rect cl_clipper_get_bounds(cl_clipper *cl);
+
+// PolyTree
+void cl_polytree_free(cl_polytree*);
+cl_polynode *cl_polytree_get_first(cl_polytree*);
+void cl_polytree_clear(cl_polytree*);
+int cl_polytree_total(cl_polytree*);
+cl_paths* cl_polytree_to_paths(cl_polytree*); 
+cl_paths* cl_closed_paths_from_polytree(cl_polytree*) ;
+cl_paths* cl_open_paths_from_polytree(cl_polytree*);
+
+// PolyNode
+void cl_polynode_free(cl_polynode*);
+cl_path* cl_polynode_get_path(cl_polynode*);
+cl_polynode* cl_polynode_get_child(cl_polynode* p, int index);
+int cl_polynode_get_child_count(cl_polynode*);
+bool cl_polynode_is_hole(cl_polynode*);
+bool cl_polynode_is_open(cl_polynode*);
+cl_polynode* cl_polynode_get_next(cl_polynode*);
 ]]
 
 local ClipType  = {
@@ -241,6 +262,19 @@ function Clipper:addPaths(paths,pt,closed)
 		error(ffi.string(C.cl_err_msg()))
 	end
 end
+function Clipper:execute_tree(clipType,subjFillType,clipFillType)
+	subjFillType = subjFillType or 'evenOdd'
+	clipFillType = clipFillType or 'evenOdd'
+	clipType = assert(ClipType[clipType],'unknown clip type')
+	subjFillType = assert(PolyFillType[subjFillType],'unknown fill type')
+	clipFillType = assert(PolyFillType[clipFillType],'unknown fill type')
+	local out = C.cl_clipper_tree_execute(self,clipType,subjFillType,clipFillType)
+	-- XXX test `not nil` return false ?!
+	if out == nil then
+		error(ffi.string(C.cl_err_msg()))
+	end
+	return ffi.gc(out, C.cl_polytree_free)
+end
 
 function Clipper:execute(clipType,subjFillType,clipFillType)
 	subjFillType = subjFillType or 'evenOdd'
@@ -261,10 +295,65 @@ function Clipper:getBounds()
 	return tonumber(r.left),tonumber(r.top),tonumber(r.right),tonumber(r.bottom)
 end
 
+local PolyTree = {}
+
+function PolyTree:clear() 
+	return C.cl_polytree_get_first(self)
+end
+
+function PolyTree:total() 
+	return C.cl_polytree_total(self)
+end
+
+function PolyTree:get_first() 
+	return C.cl_polytree_get_first(self)
+end
+
+function PolyTree:paths() 
+	return ffi.gc(C.cl_polytree_to_paths(self), C.cl_paths_free)
+end
+
+function PolyTree:closed_paths() 
+	return ffi.gc(C.cl_closed_paths_from_polytree(self), C.cl_paths_free)
+end
+
+function PolyTree:open_paths() 
+	return ffi.gc(C.cl_open_paths_from_polytree(self), C.cl_paths_free)
+end
+
+local PolyNode = {}
+
+function PolyNode:get_path()
+	return C.cl_polynode_get_path(self)
+end
+
+function PolyNode:get_child(i)
+	local n = C.cl_polynode_get_child(self, i-1)
+	if n == nil then return nil else return n end
+end
+
+function PolyNode:get_child_count()
+	return C.cl_polynode_get_child_count(self)
+end
+function PolyNode:is_hole()
+	return C.cl_polynode_is_hole(self)
+end
+
+function PolyNode:is_open()
+	return C.cl_polynode_is_open(self)
+end
+
+function PolyNode:get_next()
+	local n = C.cl_polynode_get_next(self)
+	if n == nil then return nil else return n end
+end
+
 ffi.metatype('cl_path', {__index = Path})
 ffi.metatype('cl_paths', {__index = Paths})
 ffi.metatype('cl_offset', {__index = ClipperOffset})
 ffi.metatype('cl_clipper', {__index = Clipper})
+ffi.metatype('cl_polytree', {__index = PolyTree})
+ffi.metatype('cl_polynode', {__index = PolyNode})
 
 return {
   Path = Path.new,
